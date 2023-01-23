@@ -1,5 +1,7 @@
 # Playwright
 
+wwww.terrariumspiders.eu
+
 # run test
 
     npm run test:report
@@ -11,3 +13,5 @@
 # show test
 
     npm run allure-report
+
+![](allure.png)
