@@ -1,5 +1,5 @@
 import { test } from "@playwright/test";
-import { Log_in_Page } from "../log_in.page";
+import { Log_in_Page } from "../../../object-page/log_in.page";
 require("dotenv").config();
 
 test.beforeEach(async ({ page }) => {

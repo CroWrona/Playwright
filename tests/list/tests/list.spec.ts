@@ -1,5 +1,14 @@
 import { test, expect, request } from "@playwright/test";
-import { List_Page } from "../list.page";
+import { List_Page } from "../../../object-page/list.page";
+import { Search_Page } from "../../../object-page/search.page";
+
+// Expected: "TERRESTRIAL"
+// Received: "TERRESTRIAL,ARBOREAL"
+
+//    at object-page/list.page.ts:111
+
+//   109 |             expect(
+//   110 |                     await this.page.locator("tbody > tr > td:nth-child(8)").innerHTML()
 
 test.beforeEach(async ({ page }) => {
 	await page.goto("https://www.terrariumspiders.eu/terrariumspiders/list.php");
@@ -7,11 +16,6 @@ test.beforeEach(async ({ page }) => {
 
 test("add a new spider and see it in the list", async ({ page }) => {
 	const list_page = new List_Page(page);
-
-	//go to add spider
-	await page.getByRole("link", { name: "Add" }).click();
-
-	//complete the data
 	const name = List_Page.generatorName();
 	const body = List_Page.generatorBodyLength();
 	const venom = List_Page.generatorVenom();
@@ -19,54 +23,72 @@ test("add a new spider and see it in the list", async ({ page }) => {
 	const temperament = List_Page.generatorTemperament();
 	const hair = List_Page.generatorHair();
 	const type = List_Page.generatorType();
-	await list_page.add_or_edit_Spider(
-		name,
-		body,
-		venom,
-		speed,
-		temperament,
-		hair,
-		type
-	);
 
-	//save spider
-	await page.getByRole("button", { name: "Add" }).click();
+	await test.step("go to add spider", async () => {
+		await list_page.click_goto_add_spider();
+	});
 
-	//go check spiders
-	await page.waitForSelector(".link");
-	await page.click("text=List");
+	await test.step("complete the data", async () => {
+		await test.step("name", async () => {
+			await list_page.fill_add_or_edit_Spider('input[name="name"]', name);
+		});
+		await test.step("body length", async () => {
+			await list_page.fill_add_or_edit_Spider(
+				'input[name="body_length"]',
+				body
+			);
+		});
+		await test.step("venom", async () => {
+			await list_page.fill_add_or_edit_Spider('input[name="venom"]', venom);
+		});
+		await test.step("speed", async () => {
+			await list_page.fill_add_or_edit_Spider('input[name="speed"]', speed);
+		});
+		await test.step("temperament", async () => {
+			await list_page.fill_add_or_edit_Spider(
+				'input[name="temperament"]',
+				temperament
+			);
+		});
+		await test.step("hair", async () => {
+			await list_page.add_or_edit_Spider_hair(hair);
+		});
+		await test.step("type", async () => {
+			await list_page.add_or_edit_Spider_type(type);
+		});
+	});
 
-	//go to the last page of the list
-	await page.locator(".paginate_button").nth(-2).click();
+	await test.step("save spider", async () => {
+		await list_page.click_creatorSpider_add_spider();
+	});
 
-	//go to the last spider
-	await page.locator("text=Show").nth(-2).click();
+	await test.step("go check spiders", async () => {
+		await list_page.click_success_list();
+	});
 
-	//check the data
-	await list_page.check_spider(
-		name,
-		body,
-		venom,
-		speed,
-		temperament,
-		hair,
-		type
-	);
+	await test.step("go to the last page of the list", async () => {
+		await list_page.click_last_page_spider();
+	});
+
+	await test.step("go to the last spider", async () => {
+		await list_page.click_last_show_spider();
+	});
+
+	await test.step("check the data", async () => {
+		await list_page.check_spider(
+			name,
+			body,
+			venom,
+			speed,
+			temperament,
+			hair,
+			type
+		);
+	});
 });
 
 test("edit the spider and see it in the list", async ({ page }) => {
 	const list_page = new List_Page(page);
-
-	//go to the last page of the list
-	await page.locator(".paginate_button").nth(-2).click();
-
-	//go to the last spider
-	await page.locator("text=Show").nth(-2).click();
-
-	//go to data editing
-	await page.click("text=Edit");
-
-	//check edit data
 	const name = List_Page.generatorName();
 	const body = List_Page.generatorBodyLength();
 	const venom = List_Page.generatorVenom();
@@ -74,36 +96,72 @@ test("edit the spider and see it in the list", async ({ page }) => {
 	const temperament = List_Page.generatorTemperament();
 	const hair = List_Page.generatorHair();
 	const type = List_Page.generatorType();
-	await list_page.add_or_edit_Spider(
-		name,
-		body,
-		venom,
-		speed,
-		temperament,
-		hair,
-		type
-	);
 
-	//edit spider
-	await page.getByRole("button", { name: "Edit" }).click();
+	await test.step("go to the last page of the list", async () => {
+		await list_page.click_last_page_spider();
+	});
 
-	//go check spiders
-	await page.waitForSelector(".link");
-	await page.click("text=Spider");
+	await test.step("go to the last spider", async () => {
+		await list_page.click_last_show_spider();
+	});
 
-	//check the data
-	await list_page.check_spider(
-		name,
-		body,
-		venom,
-		speed,
-		temperament,
-		hair,
-		type
-	);
+	await test.step("go to data editing", async () => {
+		await list_page.click_goto_edit_spider();
+	});
+
+	await test.step("check edit data", async () => {
+		await test.step("name", async () => {
+			await list_page.fill_add_or_edit_Spider('input[name="name"]', name);
+		});
+		await test.step("body length", async () => {
+			await list_page.fill_add_or_edit_Spider(
+				'input[name="body_length"]',
+				body
+			);
+		});
+		await test.step("venom", async () => {
+			await list_page.fill_add_or_edit_Spider('input[name="venom"]', venom);
+		});
+		await test.step("speed", async () => {
+			await list_page.fill_add_or_edit_Spider('input[name="speed"]', speed);
+		});
+		await test.step("temperament", async () => {
+			await list_page.fill_add_or_edit_Spider(
+				'input[name="temperament"]',
+				temperament
+			);
+		});
+		await test.step("hair", async () => {
+			await list_page.add_or_edit_Spider_hair(hair);
+		});
+		await test.step("type", async () => {
+			await list_page.add_or_edit_Spider_type(type);
+		});
+	});
+
+	await test.step("edit spider", async () => {
+		await list_page.click_creatorSpider_edit_spider();
+	});
+
+	await test.step("go check spiders", async () => {
+		await list_page.click_success_spider();
+	});
+
+	await test.step("check the data", async () => {
+		await list_page.check_spider(
+			name,
+			body,
+			venom,
+			speed,
+			temperament,
+			hair,
+			type
+		);
+	});
 });
 
 test("check how many species of spiders are there", async ({ page }) => {
+	const search_page = new Search_Page(page);
 	let name_spiders = [
 		"Brachypelma emilia",
 		"Brachypelma auratum",
@@ -115,21 +173,17 @@ test("check how many species of spiders are there", async ({ page }) => {
 		"Brachypelma fossorium",
 	];
 
-	await test.step("use the search ", async () => {
-		await page.getByLabel("Search:").fill("brachypelma");
+	await test.step("use the search", async () => {
+		await search_page.useSearch("brachypelma");
 	});
 
 	await test.step("check the number of spiders", async () => {
-		await expect(page.locator("tbody > tr")).toHaveCount(name_spiders.length);
+		await search_page.check_spierLength(name_spiders.length);
 	});
 
 	for (let i = 0; i < name_spiders.length; i++) {
 		await test.step(`check ` + name_spiders[i], async () => {
-			expect(
-				await page
-					.locator(`tbody > tr:nth-child(${i + 1}) > td:nth-child(2)`)
-					.textContent()
-			).toBe(name_spiders[i]);
+			await search_page.check_spiderName(name_spiders[i], i + 1);
 		});
 	}
 });

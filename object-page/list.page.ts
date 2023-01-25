@@ -1,49 +1,86 @@
 import { expect, Locator, Page } from "@playwright/test";
-import { BasePage } from "../../object-page/base.page";
+import { BasePage } from "./base.page";
 
 export class List_Page extends BasePage {
 	readonly page: Page;
-	//readonly getStartedLink: Locator;
+	readonly gotoAdd: Locator;
+	readonly gotoEdit: Locator;
 
 	constructor(page: Page) {
 		super(page);
 		this.page = page;
+		this.gotoAdd = page.getByRole("link", { name: "Add" });
+		this.gotoEdit = page.getByRole("link", { name: "Edit" });
 	}
 
-	async add_or_edit_Spider(name, body, venom, speed, temperament, hair, type) {
-		await this.page.locator('input[name="name"]').fill(name);
-		await this.page.locator('input[name="body_length"]').fill(body);
-		await this.page.locator('input[name="venom"]').fill(venom);
-		await this.page.locator('input[name="speed"]').fill(speed);
-		await this.page.locator('input[name="temperament"]').fill(temperament);
+	async click_goto_add_spider() {
+		await this.gotoAdd.click();
+	}
 
+	async click_goto_edit_spider() {
+		await this.gotoEdit.click();
+	}
+
+	async click_success_list() {
+		await this.page.waitForSelector(".link");
+		await this.page.click("text=List");
+	}
+
+	async click_success_spider() {
+		await this.page.waitForSelector(".link");
+		await this.page.click("text=Spider");
+	}
+
+	async click_last_page_spider() {
+		await this.page.locator(".paginate_button").nth(-2).click();
+	}
+
+	async click_last_show_spider() {
+		await this.page.locator("text=Show").nth(-2).click();
+	}
+
+	async click_creatorSpider_add_spider() {
+		await this.page.getByRole("button", { name: "Add" }).click();
+	}
+
+	async click_creatorSpider_edit_spider() {
+		await this.page.getByRole("button", { name: "Edit" }).click();
+	}
+
+	async fill_add_or_edit_Spider(selector: string, text: string) {
+		await this.page.locator(selector).fill(text);
+	}
+
+	async add_or_edit_Spider_hair(hair) {
+		//console.log(hair);
 		if (hair == "YES") {
 			await this.page.getByRole("checkbox").nth(0).check();
 		} else if (hair == "NO") {
 			await this.page.getByRole("checkbox").nth(1).check();
 		}
+		await this.page.waitForTimeout(500);
+	}
 
+	async add_or_edit_Spider_type(type) {
+		//console.log(type)
 		switch (type) {
 			case "TERRESTRIAL":
 				await this.page.getByRole("checkbox").nth(2).check();
+				await this.page.waitForTimeout(500);
 				break;
 			case "ARBOREAL":
 				await this.page.getByRole("checkbox").nth(3).check();
+				await this.page.waitForTimeout(500);
 				break;
 			case "BURROWING":
 				await this.page.getByRole("checkbox").nth(4).check();
+				await this.page.waitForTimeout(500);
 				break;
 		}
 	}
 
 	async check_spider(name, body, venom, speed, temperament, hair, type) {
-		// await test.step(`xyz : ` + name_spiders[i], async () => {
-		// 	expect(
-		// 		await page
-		// 			.locator(`tbody > tr:nth-child(${i + 1}) > td:nth-child(2)`)
-		// 			.textContent()
-		// 	).toBe(name_spiders[i]);
-		// });
+		await this.page.waitForSelector("tbody > tr > td");
 		//Name
 		expect(
 			await this.page.locator("tbody > tr > td:nth-child(2)").innerHTML()
@@ -73,6 +110,7 @@ export class List_Page extends BasePage {
 			await this.page.locator("tbody > tr > td:nth-child(8)").innerHTML()
 		).toBe(type);
 		//console.log(await this.page.locator("tbody > tr").innerText());
+		return;
 	}
 
 	static generatorName() {
