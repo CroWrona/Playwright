@@ -10,8 +10,51 @@ export abstract class BasePage {
 		await this.page.goto(url);
 	}
 
-	async clickLocator(locator: string) {
+	async click_Text(text: string) {
+		await this.page.click(`text=${text}`);
+	}
+
+	async click_Locator(locator: string) {
 		await this.page.click(locator);
+	}
+
+	async check_Visible(locator: string) {
+		await expect(this.page.locator(locator)).toBeVisible();
+	}
+
+	async check_not_Visible(locator: string) {
+		await expect(this.page.locator(locator)).not.toBeVisible();
+	}
+
+	async check_To_Have_Url(url) {
+		await expect(this.page).toHaveURL(url);
+	}
+
+	async check_Text(locator: string, text: string) {
+		await expect(this.page.locator(locator)).toHaveText(text);
+	}
+
+	async check_status_200(url: string) {
+		await this.page.waitForResponse(
+			response => response.url() === url && response.status() === 200
+		);
+	}
+
+	async check_status_404(url: string) {
+		await this.page.waitForResponse(
+			response => response.url() === url && response.status() === 404
+		);
+	}
+
+	async check_img_background(locator: string, image: string) {
+		await expect(this.page.locator(locator)).toHaveCSS(
+			"background-image",
+			image
+		);
+	}
+
+	async check_img_src(locator: string, image: string) {
+		await expect(this.page.locator(locator)).toHaveAttribute("src", image);
 	}
 
 	// async shouldBeOpened() {
